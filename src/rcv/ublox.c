@@ -80,7 +80,7 @@
 
 #define P2_10       0.0009765625 /* 2^-10 */
 
-#define CPSTD_VALID 5           /* std-dev threshold of carrier-phase valid */
+#define CPSTD_VALID 4           /* std-dev threshold of carrier-phase valid */
 
 #define ROUND(x)    (int)floor((x)+0.5)
 
@@ -220,6 +220,7 @@ static int decode_rxmraw(raw_t *raw)
             raw->obs.data[n].L[j]=raw->obs.data[n].P[j]=0.0;
             raw->obs.data[n].D[j]=0.0;
             raw->obs.data[n].SNR[j]=raw->obs.data[n].LLI[j]=0;
+            raw->obs.data[n].qualL[j]=raw->obs.data[n].qualP[j]=0;
             raw->obs.data[n].code[j]=CODE_NONE;
         }
         n++;
@@ -233,11 +234,11 @@ static int decode_rxmrawx(raw_t *raw)
 {
     gtime_t time;
     double tow,cp1,pr1,tadj=0.0,toff=0.0,freq,tn;
-    int i,j,sys,prn,sat,n=0,nsat,week,tstat,lockt,slip,halfv,halfc,fcn,cpstd;
-    int std_slip=0;
+    int i,j,sys,prn,sat,n=0,nsat,week,tstat,lockt,halfv,halfc,fcn;
+    int cpstd,prstd,std_slip=0;
     char *q;
     unsigned char *p=raw->buff+6;
-    
+
     trace(4,"decode_rxmrawx: len=%d\n",raw->len);
     
     nsat=U1(p+11);
@@ -261,7 +262,7 @@ static int decode_rxmrawx(raw_t *raw)
     if ((q=strstr(raw->opt,"-TADJ="))) {
         sscanf(q,"-TADJ=%lf",&tadj);
     }
-    /* slip theshold of std-dev of carreir-phase (-STD_SLIP) */
+    /* slip threshold of std-dev of carrier-phase (-STD_SLIP) */
     if ((q=strstr(raw->opt,"-STD_SLIP="))) {
         sscanf(q,"-STD_SLIP=%d",&std_slip);
     }
@@ -282,15 +283,19 @@ static int decode_rxmrawx(raw_t *raw)
             trace(2,"ubx rxmrawx sat number error: sys=%2d prn=%2d\n",sys,prn);
             continue;
         }
+        prstd=U1(p+27)&15; /* pseudorange std-dev */
         cpstd=U1(p+28)&15; /* carrier-phase std-dev */
         tstat=U1(p+30); /* tracking status */
         pr1=tstat&1?R8(p  ):0.0;
+        /* indicate phase ok if locked and std<=slip threshold */
         cp1=tstat&2?R8(p+8):0.0;
         if (cp1==-0.5||cpstd>CPSTD_VALID) cp1=0.0; /* invalid phase */
         raw->obs.data[n].sat=sat;
         raw->obs.data[n].time=time;
         raw->obs.data[n].P[0]=pr1;
         raw->obs.data[n].L[0]=cp1;
+        raw->obs.data[n].qualL[0]=cpstd<=7?cpstd:0;
+        raw->obs.data[n].qualP[0]=prstd;
         
         /* offset by time tag adjustment */
         if (toff!=0.0) {
@@ -302,26 +307,38 @@ static int decode_rxmrawx(raw_t *raw)
         }
         raw->obs.data[n].D[0]=R4(p+16);
         raw->obs.data[n].SNR[0]=U1(p+26)*4;
+        /* indicate slip occurred if phase std>=slip threshold */
         raw->obs.data[n].LLI[0]=0;
         raw->obs.data[n].code[0]=
             sys==SYS_CMP?CODE_L1I:(sys==SYS_GAL?CODE_L1X:CODE_L1C);
         
         lockt=U2(p+24);    /* lock time count (ms) */
-        slip=lockt==0||lockt<raw->lockt[sat-1][0]?1:0;
+        if (lockt==0||lockt<raw->lockt[sat-1][0]) raw->lockt[sat-1][1]=1;
+        raw->lockt[sat-1][0]=lockt;
         if (std_slip>0) {
-            slip|=(cpstd>=std_slip)?1:0; /* slip by std-dev of cp */
+            if (cpstd>=std_slip) raw->lockt[sat-1][1]=1; /* slip by std-dev of cp */
         }
-        halfv=tstat&4?1:0; /* half cycle valid */
+        if (sys==SYS_SBS) { /* half-cycle valid */
+            halfv=lockt>8000?1:0;
+        }
+        else {
+            halfv=tstat&4?1:0; /* half cycle valid */
+        }
         halfc=tstat&8?1:0; /* half cycle subtracted from phase */
-        
+
+#if 0 /* for debug */
+        trace(2,"cpstd=%d sys=%d prn=%3d tstat=%02X lock=%4d ts=%s\n",
+              cpstd,sys,prn,tstat,lockt,time_str(time,3));
+#endif
+
         if (cp1!=0.0) { /* carrier-phase valid */
-            
+
             /* LLI: bit1=loss-of-lock,bit2=half-cycle-invalid */
-            raw->obs.data[n].LLI[0]|=slip;
+            raw->obs.data[n].LLI[0]|=raw->lockt[sat-1][1]>0.0?1:0;
             raw->obs.data[n].LLI[0]|=halfc!=raw->halfc[sat-1][0]?1:0;
             raw->obs.data[n].LLI[0]|=halfv?0:2;
-            raw->lockt[sat-1][0]=lockt;
             raw->halfc[sat-1][0]=halfc;
+            raw->lockt[sat-1][1]=0.0;
         }
         for (j=1;j<NFREQ+NEXOBS;j++) {
             raw->obs.data[n].L[j]=raw->obs.data[n].P[j]=0.0;
@@ -490,15 +507,25 @@ static int decode_trkmeas(raw_t *raw)
     static double adrs[MAXSAT]={0};
     gtime_t time;
     double ts,tr=-1.0,t,tau,utc_gpst,snr,adr,dop;
-    int i,j,n=0,nch,sys,prn,sat,qi,frq,flag,lock1,lock2,week;
+    int i,j,n=0,nch,sys,prn,sat,qi,frq,flag,lock1,lock2,week,fw=0;
     unsigned char *p=raw->buff+6;
-    
+    char *q;
+    /* adjustment to code measurement in meters, based on GLONASS freq,
+       values based on difference between TRK_MEAS values and  RXM-RAWX values */
+    const char P_adj_fw2[]={ 0, 0, 0, 0, 1, 3, 2, 0,-4,-3,-9,-8,-7,-4, 0};  /* fw 2.30 */
+    const char P_adj_fw3[]={11,13,13,14,14,13,12,10, 8, 6, 5, 5, 5, 7, 0};  /* fw 3.01 */
+
     trace(4,"decode_trkmeas: len=%d\n",raw->len);
     
     if (raw->outtype) {
         sprintf(raw->msgtype,"UBX TRK-MEAS  (%4d):",raw->len);
     }
     if (!raw->time.time) return 0;
+
+    /* trk meas code adjust (-TRKM_ADJ) */
+    if ((q=strstr(raw->opt,"-TRKM_ADJ="))) {
+        sscanf(q,"-TRKM_ADJ=%d",&fw);
+    }
     
     /* number of channels */
     nch=U1(p+2);
@@ -545,7 +572,7 @@ static int decode_trkmeas(raw_t *raw)
         ts=I8(p+24)*P2_32/1000.0;
         if      (sys==SYS_CMP) ts+=14.0;             /* bdt  -> gpst */
         else if (sys==SYS_GLO) ts-=10800.0+utc_gpst; /* glot -> gpst */
-        
+
         /* signal travel time */
         tau=tr-ts;
         if      (tau<-302400.0) tau+=604800.0;
@@ -583,6 +610,7 @@ static int decode_trkmeas(raw_t *raw)
         raw->obs.data[n].D[0]=(float)dop;
         raw->obs.data[n].SNR[0]=(unsigned char)(snr*4.0);
         raw->obs.data[n].code[0]=sys==SYS_CMP?CODE_L1I:CODE_L1C;
+        raw->obs.data[n].qualL[0]=8-qi;
         raw->obs.data[n].LLI[0]=raw->lockt[sat-1][1]>0.0?1:0;
         if (sys==SYS_SBS) { /* half-cycle valid */
             raw->obs.data[n].LLI[0]|=lock2>142?0:2;
@@ -591,11 +619,17 @@ static int decode_trkmeas(raw_t *raw)
             raw->obs.data[n].LLI[0]|=flag&0x80?0:2;
         }
         raw->lockt[sat-1][1]=0.0;
-        
+        /* adjust code measurements for GLONASS sats */
+        if (sys==SYS_GLO&&frq>=-7&&frq<=7) {
+            if (fw==2) raw->obs.data[n].P[0]+=(double)P_adj_fw2[frq+7];
+            if (fw==3) raw->obs.data[n].P[0]+=(double)P_adj_fw3[frq+7];
+        }
+
         for (j=1;j<NFREQ+NEXOBS;j++) {
             raw->obs.data[n].L[j]=raw->obs.data[n].P[j]=0.0;
             raw->obs.data[n].D[j]=0.0;
             raw->obs.data[n].SNR[j]=raw->obs.data[n].LLI[j]=0;
+            raw->obs.data[n].qualL[j]=raw->obs.data[n].qualP[j]=0;
             raw->obs.data[n].code[j]=CODE_NONE;
         }
         n++;

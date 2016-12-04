@@ -189,8 +189,8 @@ EXPORT const double lam_carr[MAXFREQ]={ /* carrier wave length (m) */
 EXPORT const prcopt_t prcopt_default={ /* defaults processing options */
     PMODE_SINGLE,0,2,SYS_GPS,   /* mode,soltype,nf,navsys */
     15.0*D2R,{{0,0}},           /* elmin,snrmask */
-    0,1,1,1,                    /* sateph,modear,glomodear,bdsmodear */
-    5,0,10,1,                   /* maxout,minlock,minfix,armaxiter */
+    0,1,1,1,1,0,                /* sateph,modear,glomodear,gpsmodear,bdsmodear,arfilter */
+    5,0,2,2,10,1,                   /* maxout,minlock,minfixsats,minfix,armaxiter */
     0,0,0,0,                    /* estion,esttrop,dynamics,tidecorr */
     1,0,0,0,0,                  /* niter,codesmooth,intpref,sbascorr,sbassatsel */
     0,0,                        /* rovpos,refpos */
@@ -1134,14 +1134,18 @@ extern int filter(double *x, double *P, const double *H, const double *v,
     double *x_,*xp_,*P_,*Pp_,*H_;
     int i,j,k,info,*ix;
     
+    /* create list of non-zero states */
     ix=imat(n,1); for (i=k=0;i<n;i++) if (x[i]!=0.0&&P[i+i*n]>0.0) ix[k++]=i;
     x_=mat(k,1); xp_=mat(k,1); P_=mat(k,k); Pp_=mat(k,k); H_=mat(k,m);
+    /* compress array by removing zero elements to save computation time */
     for (i=0;i<k;i++) {
         x_[i]=x[ix[i]];
         for (j=0;j<k;j++) P_[i+j*k]=P[ix[i]+ix[j]*n];
         for (j=0;j<m;j++) H_[i+j*k]=H[ix[i]+j*n];
     }
+    /* do kalman filter state update on compressed arrays */
     info=filter_(x_,P_,H_,v,R,k,m,xp_,Pp_);
+    /* copy values from compressed arrays back to full arrays */
     for (i=0;i<k;i++) {
         x[ix[i]]=xp_[i];
         for (j=0;j<k;j++) P[ix[i]+ix[j]*n]=Pp_[i+j*k];
@@ -2930,10 +2934,10 @@ extern void traceobs(int level, const obsd_t *obs, int n)
     for (i=0;i<n;i++) {
         time2str(obs[i].time,str,3);
         satno2id(obs[i].sat,id);
-        fprintf(fp_trace," (%2d) %s %-3s rcv%d %13.3f %13.3f %13.3f %13.3f %d %d %d %d %3.1f %3.1f\n",
+        fprintf(fp_trace," (%2d) %s %-3s rcv%d %13.3f %13.3f %13.3f %13.3f %d %d %d %d %x %x %3.1f %3.1f\n",
               i+1,str,id,obs[i].rcv,obs[i].L[0],obs[i].L[1],obs[i].P[0],
               obs[i].P[1],obs[i].LLI[0],obs[i].LLI[1],obs[i].code[0],
-              obs[i].code[1],obs[i].SNR[0]*0.25,obs[i].SNR[1]*0.25);
+              obs[i].code[1],obs[i].qualL[0],obs[i].qualP[0],obs[i].SNR[0]*0.25,obs[i].SNR[1]*0.25);
     }
     fflush(fp_trace);
 }

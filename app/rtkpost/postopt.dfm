@@ -4,7 +4,7 @@ object OptDialog: TOptDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Options'
-  ClientHeight = 295
+  ClientHeight = 341
   ClientWidth = 411
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -54,7 +54,7 @@ object OptDialog: TOptDialog
   end
   object BtnCancel: TButton
     Left = 310
-    Top = 264
+    Top = 315
     Width = 99
     Height = 29
     Caption = '&Cancel'
@@ -63,7 +63,7 @@ object OptDialog: TOptDialog
   end
   object BtnOk: TButton
     Left = 211
-    Top = 264
+    Top = 315
     Width = 99
     Height = 29
     Caption = '&OK'
@@ -73,7 +73,7 @@ object OptDialog: TOptDialog
   end
   object BtnSave: TButton
     Left = 100
-    Top = 264
+    Top = 315
     Width = 99
     Height = 29
     Caption = '&Save...'
@@ -82,7 +82,7 @@ object OptDialog: TOptDialog
   end
   object BtnLoad: TButton
     Left = 1
-    Top = 264
+    Top = 315
     Width = 99
     Height = 29
     Caption = '&Load...'
@@ -93,12 +93,11 @@ object OptDialog: TOptDialog
     Left = 0
     Top = 0
     Width = 411
-    Height = 263
+    Height = 314
     ActivePage = TabSheet1
     TabOrder = 4
     object TabSheet1: TTabSheet
       Caption = 'Setting&1'
-      ExplicitHeight = 234
       object Label3: TLabel
         Left = 24
         Top = 73
@@ -225,6 +224,7 @@ object OptDialog: TOptDialog
           'DGPS/DGNSS'
           'Kinematic'
           'Static'
+          'Static-Start'
           'Moving-Base'
           'Fixed'
           'PPP Kinematic'
@@ -451,7 +451,6 @@ object OptDialog: TOptDialog
     object TabSheet2: TTabSheet
       Caption = 'Setting&2'
       ImageIndex = 1
-      ExplicitHeight = 234
       object Label25: TLabel
         Left = 24
         Top = 7
@@ -514,6 +513,20 @@ object OptDialog: TOptDialog
         Width = 179
         Height = 13
         Caption = 'Min Confidence / Max FCB to Fix Amb'
+      end
+      object Label49: TLabel
+        Left = 24
+        Top = 235
+        Width = 131
+        Height = 13
+        Caption = 'Min Fix Sats / Min Hold Sats'
+      end
+      object Label50: TLabel
+        Left = 24
+        Top = 257
+        Width = 144
+        Height = 13
+        Caption = 'Max Pos Var for AR / AR Filter'
       end
       object AmbRes: TComboBox
         Left = 248
@@ -634,7 +647,8 @@ object OptDialog: TOptDialog
         Items.Strings = (
           'OFF'
           'ON'
-          'Auto Calibration')
+          'Auto Calibration'
+          'Fix and Hold')
       end
       object FixCntHoldAmb: TEdit
         Left = 248
@@ -714,11 +728,48 @@ object OptDialog: TOptDialog
         TabOrder = 12
         Text = '1'
       end
+      object MinFixSats: TEdit
+        Left = 248
+        Top = 233
+        Width = 75
+        Height = 21
+        TabOrder = 21
+        Text = '3'
+      end
+      object MinHoldSats: TEdit
+        Left = 325
+        Top = 233
+        Width = 75
+        Height = 21
+        TabOrder = 22
+        Text = '5'
+      end
+      object MaxPosVarAR: TEdit
+        Left = 248
+        Top = 255
+        Width = 75
+        Height = 21
+        TabOrder = 23
+        Text = '0.004'
+      end
+      object ARFilter: TComboBox
+        Left = 325
+        Top = 255
+        Width = 75
+        Height = 21
+        Style = csDropDownList
+        ItemIndex = 0
+        TabOrder = 24
+        Text = 'OFF'
+        OnChange = AmbResChange
+        Items.Strings = (
+          'OFF'
+          'ON')
+      end
     end
     object TabSheet3: TTabSheet
       Caption = 'O&utput'
       ImageIndex = 2
-      ExplicitHeight = 234
       object LabelSolFormat: TLabel
         Left = 24
         Top = 9
@@ -1183,7 +1234,6 @@ object OptDialog: TOptDialog
     object TabSheet5: TTabSheet
       Caption = '&Positions'
       ImageIndex = 4
-      ExplicitHeight = 234
       object Label4: TLabel
         Left = 12
         Top = 12
@@ -1820,7 +1870,6 @@ object OptDialog: TOptDialog
     object TabSheet6: TTabSheet
       Caption = '&Misc'
       ImageIndex = 6
-      ExplicitHeight = 234
       object Label19: TLabel
         Left = 184
         Top = 136
@@ -2022,7 +2071,7 @@ object OptDialog: TOptDialog
   end
   object BtnExtOpt: TButton
     Left = 1
-    Top = 264
+    Top = 315
     Width = 69
     Height = 29
     Caption = 'Ext Opt...'
