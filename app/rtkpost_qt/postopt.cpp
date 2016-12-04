@@ -461,6 +461,10 @@ void OptDialog::GetOpt(void)
     RejectThres->setValue(mainForm->RejectThres);
     SlipThres->setValue(mainForm->SlipThres);
     ARIter->setValue(mainForm->ARIter);
+    MinFixSats->setValue(mainForm->MinFixSats);
+    MinHoldSats->setValue(mainForm->MinHoldSats);
+    MaxPosVarAR->setValue(mainForm->MaxPosVarAR);
+    ARFilter->setCurrentIndex(mainForm->ARFilter);
     NumIter->setValue(mainForm->NumIter);
     BaselineLen->setValue(mainForm->BaseLine[0]);
     BaselineSig->setValue(mainForm->BaseLine[1]);
@@ -587,6 +591,10 @@ void OptDialog::SetOpt(void)
     mainForm->SlipThres = SlipThres->value();
     mainForm->ARIter = ARIter->value();
     mainForm->NumIter = NumIter->value();
+    mainForm->MinFixSats = MinFixSats->value();
+    mainForm->MinHoldSats = MinHoldSats->value();
+    mainForm->ARFilter = ARFilter->currentIndex();
+    mainForm->MaxPosVarAR = MaxPosVarAR->value();
     mainForm->BaseLine[0] = BaselineLen->value();
     mainForm->BaseLine[1] = BaselineSig->value();
     mainForm->BaseLineConst = BaselineConst->isChecked();
@@ -668,6 +676,7 @@ void OptDialog::LoadOpt(const QString &file)
     prcopt_t prcopt = prcopt_default;
     solopt_t solopt = solopt_default;
     filopt_t filopt;
+    int ppp=PosMode->currentIndex()>=PMODE_PPP_KINEMA;
 
     memset(&filopt, 0, sizeof(filopt_t));
 
@@ -710,7 +719,10 @@ void OptDialog::LoadOpt(const QString &file)
     GloAmbRes->setCurrentIndex(prcopt.glomodear);
     BdsAmbRes->setCurrentIndex(prcopt.bdsmodear);
     ValidThresAR->setValue(prcopt.thresar[0]);
-    ThresAR2->setValue(prcopt.thresar[1]);
+    if (ppp)
+        ThresAR2->setValue(prcopt.thresar[1]);
+    else
+        MaxPosVarAR->setValue(prcopt.thresar[1]);
     ThresAR3->setValue(prcopt.thresar[2]);
     OutCntResetAmb->setValue(prcopt.maxout);
     FixCntHoldAmb->setValue(prcopt.minfix);
@@ -722,6 +734,9 @@ void OptDialog::LoadOpt(const QString &file)
     RejectThres->setValue(prcopt.maxinno);
     SlipThres->setValue(prcopt.thresslip);
     ARIter->setValue(prcopt.armaxiter);
+    MinFixSats ->setValue(prcopt.minfixsats);
+    MinHoldSats ->setValue(prcopt.minholdsats);
+    ARFilter ->setCurrentIndex(prcopt.arfilter);
     NumIter->setValue(prcopt.niter);
     BaselineLen->setValue(prcopt.baseline[0]);
     BaselineSig->setValue(prcopt.baseline[1]);
@@ -817,6 +832,7 @@ void OptDialog::SaveOpt(const QString &file)
     prcopt_t prcopt = prcopt_default;
     solopt_t solopt = solopt_default;
     filopt_t filopt;
+    int ppp=PosMode->currentIndex()>=PMODE_PPP_KINEMA;
 
     memset(&filopt, 0, sizeof(filopt_t));
 
@@ -860,7 +876,10 @@ void OptDialog::SaveOpt(const QString &file)
     prcopt.glomodear = GloAmbRes->currentIndex();
     prcopt.bdsmodear = BdsAmbRes->currentIndex();
     prcopt.thresar[0] = ValidThresAR->value();
-    prcopt.thresar[1] = ThresAR2->value();
+    if (ppp)
+        prcopt.thresar[1] = ThresAR2->value();
+    else
+        prcopt.thresar[1] = MaxPosVarAR->value();
     prcopt.thresar[2] = ThresAR3->value();
     prcopt.maxout = OutCntResetAmb->value();
     prcopt.minfix = FixCntHoldAmb->value();
@@ -872,6 +891,9 @@ void OptDialog::SaveOpt(const QString &file)
     prcopt.maxinno = RejectThres->value();
     prcopt.thresslip = SlipThres->value();
     prcopt.armaxiter = ARIter->value();
+    prcopt.minfixsats = MinFixSats->value();
+    prcopt.minholdsats = MinHoldSats->value();
+    prcopt.arfilter	= ARFilter->currentIndex();
     prcopt.niter = NumIter->value();
     if (prcopt.mode == PMODE_MOVEB && BaselineConst->isChecked()) {
         prcopt.baseline[0] = BaselineLen->value();
@@ -978,6 +1000,10 @@ void OptDialog::UpdateEnable(void)
     RejectThres->setEnabled(rel || ppp);
     ARIter->setEnabled(ppp);
     NumIter->setEnabled(rel || ppp);
+    MinFixSats->setEnabled(ar);
+    MinHoldSats->setEnabled(ar);
+    MaxPosVarAR->setEnabled(ar && !ppp);
+    ARFilter->setEnabled(ar);
     BaselineConst->setEnabled(PosMode->currentIndex() == PMODE_MOVEB);
     BaselineLen->setEnabled(BaselineConst->isChecked() && PosMode->currentIndex() == PMODE_MOVEB);
     BaselineSig->setEnabled(BaselineConst->isChecked() && PosMode->currentIndex() == PMODE_MOVEB);

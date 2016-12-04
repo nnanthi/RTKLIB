@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>643</width>
+    <width>652</width>
     <height>587</height>
    </rect>
   </property>
@@ -177,7 +177,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="TabSheet1">
       <property name="toolTip">
@@ -213,6 +213,11 @@
          <item>
           <property name="text">
            <string>Static</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Static-Start</string>
           </property>
          </item>
          <item>
@@ -916,66 +921,7 @@
        <string>Setting&amp;2</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="8" column="3" colspan="2">
-        <widget class="QDoubleSpinBox" name="ElMaskHold">
-         <property name="suffix">
-          <string>°</string>
-         </property>
-         <property name="decimals">
-          <number>0</number>
-         </property>
-         <property name="maximum">
-          <double>90.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="1" colspan="2">
-        <widget class="QSpinBox" name="OutCntResetAmb">
-         <property name="maximum">
-          <number>100</number>
-         </property>
-         <property name="value">
-          <number>5</number>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="3" colspan="2">
-        <widget class="QDoubleSpinBox" name="SlipThres">
-         <property name="suffix">
-          <string> m</string>
-         </property>
-         <property name="decimals">
-          <number>3</number>
-         </property>
-         <property name="value">
-          <double>0.050000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="1" colspan="2">
-        <widget class="QDoubleSpinBox" name="MaxAgeDiff">
-         <property name="suffix">
-          <string> s</string>
-         </property>
-         <property name="decimals">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <double>10000.000000000000000</double>
-         </property>
-         <property name="value">
-          <double>30.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="17" column="1" colspan="2">
-        <widget class="QSpinBox" name="ARIter">
-         <property name="value">
-          <number>1</number>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="1" colspan="2">
+       <item row="16" column="1" colspan="2">
         <widget class="QDoubleSpinBox" name="RejectGdop">
          <property name="suffix">
           <string> m</string>
@@ -991,7 +937,7 @@
          </property>
         </widget>
        </item>
-       <item row="14" column="3" colspan="2">
+       <item row="16" column="3" colspan="2">
         <widget class="QDoubleSpinBox" name="RejectThres">
          <property name="decimals">
           <number>1</number>
@@ -1004,7 +950,92 @@
          </property>
         </widget>
        </item>
-       <item row="17" column="3" colspan="2">
+       <item row="0" column="4">
+        <widget class="QComboBox" name="BdsAmbRes">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <item>
+          <property name="text">
+           <string>OFF</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ON</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="LabelRatio">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Min Ratio to Fix Ambiguity</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="LabelConf">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Min Confidence / Max FCB to Fix Amb</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="Label13">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Min Lock / Elevation to Fix Amb</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0">
+        <widget class="QLabel" name="LabelHold">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Min Fix / Elevation to Hold Amb</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="0">
+        <widget class="QLabel" name="Label22">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Outage to Reset Amb / Slip Thres</string>
+         </property>
+        </widget>
+       </item>
+       <item row="19" column="3" colspan="2">
         <widget class="QSpinBox" name="NumIter">
          <property name="value">
           <number>1</number>
@@ -1024,7 +1055,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="3" colspan="2">
+       <item row="8" column="3" colspan="2">
         <widget class="QDoubleSpinBox" name="ElMaskAR">
          <property name="suffix">
           <string>°</string>
@@ -1037,7 +1068,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="1" colspan="2">
+       <item row="8" column="1" colspan="2">
         <widget class="QSpinBox" name="LockCntFixAmb">
          <property name="suffix">
           <string> s</string>
@@ -1050,46 +1081,140 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1" colspan="2">
-        <widget class="QDoubleSpinBox" name="ThresAR2">
-         <property name="decimals">
-          <number>8</number>
+       <item row="15" column="0">
+        <widget class="QLabel" name="Label14">
+         <property name="enabled">
+          <bool>true</bool>
          </property>
-         <property name="maximum">
-          <double>100.000000000000000</double>
-         </property>
-         <property name="value">
-          <double>0.999950000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="3" colspan="2">
-        <widget class="QDoubleSpinBox" name="ThresAR3">
-         <property name="decimals">
-          <number>3</number>
-         </property>
-         <property name="maximum">
-          <double>1000.000000000000000</double>
-         </property>
-         <property name="value">
-          <double>0.200000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="19" column="0">
-        <widget class="QCheckBox" name="BaselineConst">
          <property name="toolTip">
           <string/>
          </property>
          <property name="text">
-          <string>Baseline Length Constraint</string>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
+          <string>Max Age of Diff / Sync Solution</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="1" colspan="2">
+       <item row="15" column="3" colspan="2">
+        <widget class="QComboBox" name="SyncSol">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <item>
+          <property name="text">
+           <string>OFF</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ON</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Auto Calibration</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="16" column="0">
+        <widget class="QLabel" name="Label11">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Reject Threshold of GDOP / Innov</string>
+         </property>
+        </widget>
+       </item>
+       <item row="19" column="0">
+        <widget class="QLabel" name="Label37">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Max # of AR Iter/# of Filter Iter</string>
+         </property>
+        </widget>
+       </item>
+       <item row="21" column="1" colspan="2">
+        <widget class="QDoubleSpinBox" name="BaselineLen">
+         <property name="suffix">
+          <string> m</string>
+         </property>
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="maximum">
+          <double>10000.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="21" column="3" colspan="2">
+        <widget class="QDoubleSpinBox" name="BaselineSig">
+         <property name="suffix">
+          <string> m</string>
+         </property>
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="value">
+          <double>0.001000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="Label49">
+         <property name="text">
+          <string>Min Fix Sats / Min Hold Sats</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="3" colspan="2">
+        <widget class="QDoubleSpinBox" name="SlipThres">
+         <property name="suffix">
+          <string> m</string>
+         </property>
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="value">
+          <double>0.050000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="1" colspan="2">
+        <widget class="QDoubleSpinBox" name="MaxAgeDiff">
+         <property name="suffix">
+          <string> s</string>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <double>10000.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>30.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="19" column="1" colspan="2">
+        <widget class="QSpinBox" name="ARIter">
+         <property name="value">
+          <number>1</number>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1" colspan="2">
         <widget class="QSpinBox" name="FixCntHoldAmb">
          <property name="suffix">
           <string> s</string>
@@ -1173,180 +1298,120 @@
            <string>Auto Calibration</string>
           </property>
          </item>
-        </widget>
-       </item>
-       <item row="0" column="4">
-        <widget class="QComboBox" name="BdsAmbRes">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
          <item>
           <property name="text">
-           <string>OFF</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ON</string>
+           <string>Fix and Hold</string>
           </property>
          </item>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="LabelRatio">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Min Ratio to Fix Ambiguity</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="LabelConf">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Min Confidence / Max FCB to Fix Amb</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="Label13">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Min Lock / Elevation to Fix Amb</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="LabelHold">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Min Fix / Elevation to Hold Amb</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="0">
-        <widget class="QLabel" name="Label22">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Outage to Reset Amb / Slip Thres</string>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="0">
-        <widget class="QLabel" name="Label14">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Max Age of Diff / Sync Solution</string>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="3" colspan="2">
-        <widget class="QComboBox" name="SyncSol">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <item>
-          <property name="text">
-           <string>OFF</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ON</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Auto Calibration</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="14" column="0">
-        <widget class="QLabel" name="Label11">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Reject Threshold of GDOP / Innov</string>
-         </property>
-        </widget>
-       </item>
-       <item row="17" column="0">
-        <widget class="QLabel" name="Label37">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Max # of AR Iter/# of Filter Iter</string>
-         </property>
-        </widget>
-       </item>
-       <item row="19" column="1" colspan="2">
-        <widget class="QDoubleSpinBox" name="BaselineLen">
+       <item row="10" column="3" colspan="2">
+        <widget class="QDoubleSpinBox" name="ElMaskHold">
          <property name="suffix">
-          <string> m</string>
+          <string>°</string>
          </property>
+         <property name="decimals">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <double>90.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="1" colspan="2">
+        <widget class="QSpinBox" name="OutCntResetAmb">
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>5</number>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1" colspan="2">
+        <widget class="QDoubleSpinBox" name="ThresAR2">
+         <property name="decimals">
+          <number>8</number>
+         </property>
+         <property name="maximum">
+          <double>100.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.999950000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="3" colspan="2">
+        <widget class="QDoubleSpinBox" name="ThresAR3">
          <property name="decimals">
           <number>3</number>
          </property>
          <property name="maximum">
-          <double>10000.000000000000000</double>
+          <double>1000.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.200000000000000</double>
          </property>
         </widget>
        </item>
-       <item row="19" column="3" colspan="2">
-        <widget class="QDoubleSpinBox" name="BaselineSig">
-         <property name="suffix">
-          <string> m</string>
+       <item row="21" column="0">
+        <widget class="QCheckBox" name="BaselineConst">
+         <property name="toolTip">
+          <string/>
          </property>
-         <property name="decimals">
+         <property name="text">
+          <string>Baseline Length Constraint</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="Label50">
+         <property name="text">
+          <string>'Max Pos Var for AR / AR Filter</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3" colspan="2">
+        <widget class="QSpinBox" name="MinHoldSats">
+         <property name="value">
+          <number>5</number>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" colspan="2">
+        <widget class="QSpinBox" name="MinFixSats">
+         <property name="value">
           <number>3</number>
          </property>
-         <property name="value">
+        </widget>
+       </item>
+       <item row="4" column="3" colspan="2">
+        <widget class="QComboBox" name="ARFilter">
+         <item>
+          <property name="text">
+           <string>OFF</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ON</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="4" column="1" colspan="2">
+        <widget class="QDoubleSpinBox" name="MaxPosVarAR">
+         <property name="decimals">
+          <number>4</number>
+         </property>
+         <property name="singleStep">
           <double>0.001000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.004000000000000</double>
          </property>
         </widget>
        </item>
@@ -2167,7 +2232,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../strsvr_qt/strsvr_qt.qrc">
+          <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -2681,7 +2746,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../strsvr_qt/strsvr_qt.qrc">
+          <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -2701,7 +2766,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../strsvr_qt/strsvr_qt.qrc">
+          <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -2821,7 +2886,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../strsvr_qt/strsvr_qt.qrc">
+          <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -2883,7 +2948,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../strsvr_qt/strsvr_qt.qrc">
+          <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -2945,7 +3010,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../strsvr_qt/strsvr_qt.qrc">
+          <iconset resource="../rtkconv_qt/rtkconv_qt.qrc">
            <normaloff>:/buttons/doc.bmp</normaloff>:/buttons/doc.bmp</iconset>
          </property>
          <property name="flat">
@@ -3417,7 +3482,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../strsvr_qt/strsvr_qt.qrc"/>
+  <include location="../rtkconv_qt/rtkconv_qt.qrc"/>
  </resources>
  <connections/>
 </ui>

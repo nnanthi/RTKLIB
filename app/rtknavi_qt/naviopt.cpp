@@ -459,6 +459,7 @@ void OptDialog::GetOpt(void)
     GloAmbRes->setCurrentIndex(PrcOpt.glomodear);
     BdsAmbRes->setCurrentIndex(PrcOpt.bdsmodear);
     ValidThresAR->setValue(PrcOpt.thresar[0]);
+    ARThres1->setValue(PrcOpt.thresar[1]);
     OutCntResetAmb->setValue(PrcOpt.maxout);
     LockCntFixAmb->setValue(PrcOpt.minlock);
     FixCntHoldAmb->setValue(PrcOpt.minfix);
@@ -469,7 +470,10 @@ void OptDialog::GetOpt(void)
     RejectThres->setValue(PrcOpt.maxinno);
     SlipThres->setValue(PrcOpt.thresslip);
     NumIter->setValue(PrcOpt.niter);
+    MinFixSats->setValue(PrcOpt.minfixsats);
+    MinHoldSats->setValue(PrcOpt.minholdsats);
     SyncSol->setCurrentIndex(PrcOpt.syncsol);
+    ARFilter->setCurrentIndex(PrcOpt.arfilter);
     ExSatsE->setText(ExSats);
     NavSys1->setChecked(PrcOpt.navsys & SYS_GPS);
     NavSys2->setChecked(PrcOpt.navsys & SYS_GLO);
@@ -596,7 +600,12 @@ void OptDialog::SetOpt(void)
     PrcOpt.maxinno = RejectThres->value();
     PrcOpt.thresslip = SlipThres->value();
     PrcOpt.niter = NumIter->value();
+    PrcOpt.minfixsats =MinFixSats->value();
+    PrcOpt.minholdsats =MinHoldSats->value();
+    PrcOpt.thresar[1] =ARThres1->value();
+    PrcOpt.niter     =NumIter->value();
     PrcOpt.syncsol = SyncSol->currentIndex();
+    PrcOpt.arfilter  =ARFilter->currentIndex();
     ExSats = ExSatsE->text();
     PrcOpt.navsys = 0;
 
@@ -771,6 +780,7 @@ void OptDialog::LoadOpt(const QString &file)
     GloAmbRes->setCurrentIndex(prcopt.glomodear);
     BdsAmbRes->setCurrentIndex(prcopt.bdsmodear);
     ValidThresAR->setValue(prcopt.thresar[0]);
+    ARThres1->setValue(prcopt.thresar[1]);
     OutCntResetAmb->setValue(prcopt.maxout);
     FixCntHoldAmb->setValue(prcopt.minfix);
     LockCntFixAmb->setValue(prcopt.minlock);
@@ -780,8 +790,11 @@ void OptDialog::LoadOpt(const QString &file)
     RejectGdop->setValue(prcopt.maxgdop);
     RejectThres->setValue(prcopt.maxinno);
     SlipThres->setValue(prcopt.thresslip);
+    MinFixSats->setValue(prcopt.minfixsats);
+    MinHoldSats->setValue(prcopt.minholdsats);
     NumIter->setValue(prcopt.niter);
     SyncSol->setCurrentIndex(prcopt.syncsol);
+    ARFilter->setCurrentIndex(prcopt.arfilter);
     BaselineLen->setValue(prcopt.baseline[0]);
     BaselineSig->setValue(prcopt.baseline[1]);
     BaselineConst->setChecked(prcopt.baseline[0] > 0.0);
@@ -988,6 +1001,7 @@ void OptDialog::SaveOpt(const QString &file)
     prcopt.glomodear = GloAmbRes->currentIndex();
     prcopt.bdsmodear = BdsAmbRes->currentIndex();
     prcopt.thresar[0] = ValidThresAR->value();
+    prcopt.thresar[1] = ARThres1->value();
     prcopt.maxout = OutCntResetAmb->value();
     prcopt.minfix = FixCntHoldAmb->value();
     prcopt.minlock = LockCntFixAmb->value();
@@ -998,7 +1012,11 @@ void OptDialog::SaveOpt(const QString &file)
     prcopt.maxinno = RejectThres->value();
     prcopt.thresslip = SlipThres->value();
     prcopt.niter = NumIter->value();
+    prcopt.minfixsats = MinFixSats->value();
+    prcopt.minholdsats = MinHoldSats->value();
+    prcopt.niter = NumIter->value();
     prcopt.syncsol = SyncSol->currentIndex();
+    prcopt.arfilter	= ARFilter->currentIndex();
     if (prcopt.mode == PMODE_MOVEB && BaselineConst->isChecked()) {
         prcopt.baseline[0] = BaselineLen->value();
         prcopt.baseline[1] = BaselineSig->value();
@@ -1098,8 +1116,12 @@ void OptDialog::UpdateEnable(void)
     SlipThres->setEnabled(ar || ppp);
     MaxAgeDiff->setEnabled(rel);
     RejectThres->setEnabled(rel || ppp);
+    MinFixSats->setEnabled(ar || ppp);
+    MinHoldSats->setEnabled(ar || ppp);
+    ARThres1->setEnabled(ar || ppp);
     NumIter->setEnabled(rel || ppp);
     SyncSol->setEnabled(rel || ppp);
+    ARFilter->setEnabled(ar || ppp);
     BaselineConst->setEnabled(PosMode->currentIndex() == PMODE_MOVEB);
     BaselineLen->setEnabled(BaselineConst->isChecked() && PosMode->currentIndex() == PMODE_MOVEB);
     BaselineSig->setEnabled(BaselineConst->isChecked() && PosMode->currentIndex() == PMODE_MOVEB);

@@ -2391,6 +2391,9 @@ void MainWindow::LoadOpt(void)
     PrcOpt.ionoopt = settings.value("prcopt/ionoopt", IONOOPT_BRDC).toInt();
     PrcOpt.tropopt = settings.value("prcopt/tropopt", TROPOPT_SAAS).toInt();
     PrcOpt.sateph = settings.value("prcopt/ephopt", EPHOPT_BRDC).toInt();
+    PrcOpt.armaxiter = settings.value("prcopt/ariter", 1).toInt();
+    PrcOpt.minfixsats = settings.value("prcopt/minfixsats", 2).toInt();
+    PrcOpt.minholdsats = settings.value("prcopt/minholdsats",   2).toInt();
     PrcOpt.niter = settings.value("prcopt/niter", 1).toInt();
     PrcOpt.eratio[0] = settings.value("prcopt/eratio0", 100.0).toDouble();
     PrcOpt.eratio[1] = settings.value("prcopt/eratio1", 100.0).toDouble();
@@ -2405,6 +2408,7 @@ void MainWindow::LoadOpt(void)
     PrcOpt.prn[4] = settings.value("prcopt/prn4", 10.0).toDouble();
     PrcOpt.sclkstab = settings.value("prcopt/sclkstab", 5E-12).toDouble();
     PrcOpt.thresar[0] = settings.value("prcopt/thresar", 3.0).toDouble();
+    PrcOpt.thresar[1] = settings.value("prcopt/thresar1", 0.99).toDouble();
     PrcOpt.elmaskar = settings.value("prcopt/elmaskar", 0.0).toDouble();
     PrcOpt.elmaskhold = settings.value("prcopt/elmaskhold", 0.0).toDouble();
     PrcOpt.thresslip = settings.value("prcopt/thresslip", 0.05).toDouble();
@@ -2412,6 +2416,7 @@ void MainWindow::LoadOpt(void)
     PrcOpt.maxgdop = settings.value("prcopt/maxgdop", 30.0).toDouble();
     PrcOpt.maxinno = settings.value("prcopt/maxinno", 30.0).toDouble();
     PrcOpt.syncsol = settings.value("prcopt/syncsol", 0).toInt();
+    PrcOpt.arfilter = settings.value("prcopt/arfilter", 0).toInt();
     ExSats = settings.value("prcopt/exsats", "").toString();
     PrcOpt.navsys = settings.value("prcopt/navsys", SYS_GPS).toInt();
     PrcOpt.posopt[0] = settings.value("prcopt/posopt1", 0).toInt();
@@ -2597,6 +2602,9 @@ void MainWindow::SaveOpt(void)
     settings.setValue("prcopt/ionoopt", PrcOpt.ionoopt);
     settings.setValue("prcopt/tropopt", PrcOpt.tropopt);
     settings.setValue("prcopt/ephopt", PrcOpt.sateph);
+    settings.setValue("prcopt/ariter", PrcOpt.armaxiter);
+    settings.setValue("prcopt/minfixsats", PrcOpt.minfixsats);
+    settings.setValue("prcopt/minholdsats",PrcOpt.minholdsats);
     settings.setValue("prcopt/niter", PrcOpt.niter);
     settings.setValue("prcopt/eratio0", PrcOpt.eratio[0]);
     settings.setValue("prcopt/eratio1", PrcOpt.eratio[1]);
@@ -2611,6 +2619,7 @@ void MainWindow::SaveOpt(void)
     settings.setValue("prcopt/prn4", PrcOpt.prn[4]);
     settings.setValue("prcopt/sclkstab", PrcOpt.sclkstab);
     settings.setValue("prcopt/thresar", PrcOpt.thresar[0]);
+    settings.setValue("prcopt/thresar1", PrcOpt.thresar[1]);
     settings.setValue("prcopt/elmaskar", PrcOpt.elmaskar);
     settings.setValue("prcopt/elmaskhold", PrcOpt.elmaskhold);
     settings.setValue("prcopt/thresslip", PrcOpt.thresslip);
@@ -2618,6 +2627,7 @@ void MainWindow::SaveOpt(void)
     settings.setValue("prcopt/maxgdop", PrcOpt.maxgdop);
     settings.setValue("prcopt/maxinno", PrcOpt.maxinno);
     settings.setValue("prcopt/syncsol", PrcOpt.syncsol);
+    settings.setValue("prcopt/arfilter", PrcOpt.arfilter);
     settings.setValue("prcopt/exsats", ExSats);
     settings.setValue("prcopt/navsys", PrcOpt.navsys);
     settings.setValue("prcopt/posopt1", PrcOpt.posopt[0]);

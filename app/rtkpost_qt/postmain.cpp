@@ -891,6 +891,7 @@ int MainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
 {
     char buff[1024],*p;
     int sat,ex;
+    int ppp = (PosMode >= PMODE_PPP_KINEMA);
     
     // processing options
     prcopt.mode     =PosMode;
@@ -918,6 +919,9 @@ int MainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.tidecorr =TideCorr;
     prcopt.armaxiter=ARIter;
     prcopt.niter    =NumIter;
+    prcopt.minfixsats = MinFixSats;
+    prcopt.minholdsats = MinHoldSats;
+    prcopt.arfilter = ARFilter;
     prcopt.intpref  =IntpRefObs;
     prcopt.sbassatsel=SbasSat;
     prcopt.eratio[0]=MeasErrR1;
@@ -933,7 +937,10 @@ int MainForm::GetOption(prcopt_t &prcopt, solopt_t &solopt,
     prcopt.prn[4]   =PrNoise5;
     prcopt.sclkstab =SatClkStab;
     prcopt.thresar[0]=ValidThresAR;
-    prcopt.thresar[1]=ThresAR2;
+    if (ppp)
+        prcopt.thresar[1]=ThresAR2;
+    else
+        prcopt.thresar[1]=MaxPosVarAR;
     prcopt.thresar[2]=ThresAR3;
     prcopt.elmaskar =ElMaskAR*D2R;
     prcopt.elmaskhold=ElMaskHold*D2R;
@@ -1261,6 +1268,10 @@ void MainForm::LoadOpt(void)
     RejectGdop         =ini.value  ("opt/rejectgdop",  30.0).toDouble();
     ARIter             =ini.value("opt/ariter",         1).toInt();
     NumIter            =ini.value("opt/numiter",        1).toInt();
+    MinFixSats         =ini.value("opt/minfixsats",     2).toInt();
+    MinHoldSats        =ini.value("opt/minholdsats",    2).toInt();
+    MaxPosVarAR        =ini.value("opt/maxposvarar", 0.99).toFloat();
+    ARFilter           =ini.value("opt/arfilter",       0).toInt();
     CodeSmooth         =ini.value("opt/codesmooth",     0).toInt();
     BaseLine[0]        =ini.value  ("opt/baselinelen",  0.0).toDouble();
     BaseLine[1]        =ini.value  ("opt/baselinesig",  0.0).toDouble();
@@ -1464,6 +1475,10 @@ void MainForm::SaveOpt(void)
     ini.setValue  ("opt/rejectthres", RejectThres );
     ini.setValue("opt/ariter",      ARIter      );
     ini.setValue("opt/numiter",     NumIter     );
+    ini.setValue("opt/minfixsats",  MinFixSats  );
+    ini.setValue("opt/minholdsats", MinHoldSats );
+    ini.setValue("opt/maxposvarar", MaxPosVarAR );
+    ini.setValue("opt/arfilter",    ARFilter    );
     ini.setValue("opt/codesmooth",  CodeSmooth  );
     ini.setValue  ("opt/baselinelen", BaseLine[0] );
     ini.setValue  ("opt/baselinesig", BaseLine[1] );
