@@ -347,6 +347,9 @@ extern "C" {
 #define PMODE_PPP_KINEMA 6              /* positioning mode: PPP-kinemaric */
 #define PMODE_PPP_STATIC 7              /* positioning mode: PPP-static */
 #define PMODE_PPP_FIXED 8               /* positioning mode: PPP-fixed */
+#define PMODE_NET    9                  /* positioning mode: Network RTK */
+
+#define MNNET     20
 
 #define SOLF_LLH    0                   /* solution format: lat/lon/height */
 #define SOLF_XYZ    1                   /* solution format: x/y/z-ecef */
@@ -1072,20 +1075,20 @@ typedef struct {        /* processing options type */
     double maxtdiff;    /* max difference of time (sec) */
     double maxinno;     /* reject threshold of innovation (m) */
     double maxgdop;     /* reject threshold of gdop */
-    double baseline[2]; /* baseline length constraint {const,sigma} (m) */
+    double baseline[MNNET*2]; /* baseline length constraint {const,sigma} (m) */
     double ru[3];       /* rover position for fixed mode {x,y,z} (ecef) (m) */
-    double rb[3];       /* base position for relative mode {x,y,z} (ecef) (m) */
-    char anttype[2][MAXANT]; /* antenna types {rover,base} */
-    double antdel[2][3]; /* antenna delta {{rov_e,rov_n,rov_u},{ref_e,ref_n,ref_u}} */
-    pcv_t pcvr[2];      /* receiver antenna parameters {rov,base} */
+    double rb[MNNET*3];       /* base position for relative mode {x,y,z} (ecef) (m) */
+    char anttype[MNNET+1][MAXANT]; /* antenna types {rover,base} */
+    double antdel[MNNET+1][3]; /* antenna delta {{rov_e,rov_n,rov_u},{ref_e,ref_n,ref_u}} */
+    pcv_t pcvr[MNNET+1];      /* receiver antenna parameters {rov,base} */
     unsigned char exsats[MAXSAT]; /* excluded satellites (1:excluded,2:included) */
     int  maxaveep;      /* max averaging epoches */
     int  initrst;       /* initialize by restart */
     int  outsingle;     /* output single by dgps/float/fix/ppp outage */
-    char rnxopt[2][256]; /* rinex options {rover,base} */
+    char rnxopt[MNNET+1][256]; /* rinex options {rover,base} */
     int  posopt[6];     /* positioning options */
     int  syncsol;       /* solution sync mode (0:off,1:on) */
-    double odisp[2][6*11]; /* ocean tide loading parameters {rov,base} */
+    double odisp[MNNET+1][6*11]; /* ocean tide loading parameters {rov,base} */
     exterr_t exterr;    /* extended receiver error model */
     int freqopt;        /* disable L2-AR */
     char pppopt[256];   /* ppp option */
